@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.objecteffects.contactlist.model.Contact;
 
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -18,14 +18,15 @@ public class ContactService implements Serializable {
 
     @PersistenceContext
     private EntityManager entityManager;
-    private final Logger log = LoggerFactory.getLogger(ContactService.class);
+    @Inject
+    private transient Logger log;
 
     public void create(final Contact contact) {
         this.entityManager.persist(contact);
     }
 
     public List<Contact> list() {
-        this.log.info("in list()");
+        this.log.info("list");
 
         return this.entityManager.createQuery("select c from Contact c",
                 Contact.class).getResultList();
@@ -38,6 +39,8 @@ public class ContactService implements Serializable {
     public void deleteContact(final Long id) {
         final Contact contact = this.entityManager.find(Contact.class, id);
         if (contact != null) {
+            this.log.info("removing {} {}", contact.getFirstName(),
+                    contact.getLastName());
             this.entityManager.remove(contact);
         }
     }

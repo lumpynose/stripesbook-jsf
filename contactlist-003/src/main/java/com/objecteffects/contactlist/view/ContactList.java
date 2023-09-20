@@ -3,6 +3,8 @@ package com.objecteffects.contactlist.view;
 import java.io.Serializable;
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import com.objecteffects.contactlist.model.Contact;
 import com.objecteffects.contactlist.service.ContactService;
 
@@ -20,6 +22,8 @@ public class ContactList implements Serializable {
 
     @Inject
     private ContactService contactService;
+    @Inject
+    private transient Logger log;
 
     @PostConstruct
     public void init() {
@@ -31,6 +35,7 @@ public class ContactList implements Serializable {
     }
 
     public Contact getContact(final Long id) {
+        this.log.info("get {}", id);
         return this.contactService.getContact(id);
     }
 
